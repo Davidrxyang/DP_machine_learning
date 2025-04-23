@@ -4,8 +4,11 @@
 #include "BPClassifier.h"
 #include <iostream>
 #include <vector>
-#include <random>
+#include <string>
+#include <fstream>
+#include <sstream>
 
-std::vector<std::vector<double>> generateDataset(int numSamples, int numFeatures, int numClasses);
+// Function to load a real dataset from a CSV file
+std::vector<std::vector<double>> loadDataset(const std::string& filename);
 
-#endif
+#endif // MAIN_H
