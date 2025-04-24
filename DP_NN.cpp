@@ -9,6 +9,19 @@ float sigmoid_derivative(float x) { return x * (1 - x); }
 float relu(float x) { return max(0.0f, x); }
 float relu_derivative(float x) { return x > 0 ? 1.0f : 0.0f; }
 
+// gradient clipping 
+float clip_by_l2norm(float value, float norm, float clip_threshold) {
+    if (norm > clip_threshold)
+        return value * (clip_threshold / norm);
+    return value;
+}
+
+float compute_l2_norm(const vector<float>& vec) {
+    float sum = 0.0f;
+    for (float x : vec) sum += x * x;
+    return sqrt(sum);
+}
+
 // Normalize in-place using train-set statistics
 void normalize(vector<vector<float>>& train, vector<vector<float>>& test) {
 
@@ -103,22 +116,23 @@ int main() {
 
             // Backprop
 
-            // calculate the gradient of the output layer
+            // calculate gradient, clip, and add noise 
             float d_out_raw = error * sigmoid_derivative(out);
-
-            // ADD NOISE HERE 
-            float d_out = add_gaussian_noise(d_out_raw);
-
+            vector<float> grads_out = { d_out_raw };
+            float norm_out = compute_l2_norm(grads_out);
+            float d_out_clipped = clip_by_l2norm(d_out_raw, norm_out, CLIP_THRESHOLD); // ← define this somewhere
+            float d_out = add_gaussian_noise(d_out_clipped);
 
             for (int j = 0; j < HIDDEN_DIM; ++j) {
 
-                // here we are calculating the gradients for the hidden layer 
+                // calculate gradient for hidden layer, clip, and add noise
 
                 float d_hidden_raw = d_out * W2[j] * relu_derivative(hidden[j]);
-
-                // ADD NOISE HERE 
-                float d_hidden = add_gaussian_noise(d_hidden_raw);
-
+                vector<float> grads_hidden = { d_hidden_raw };
+                float norm_hidden = compute_l2_norm(grads_hidden);
+                float d_hidden_clipped = clip_by_l2norm(d_hidden_raw, norm_hidden, CLIP_THRESHOLD);
+                float d_hidden = add_gaussian_noise(d_hidden_clipped);
+                
                 for (int k = 0; k < INPUT_DIM; ++k)
 
                     W1[j][k] += LEARNING_RATE * d_hidden * X_train[i][k];
