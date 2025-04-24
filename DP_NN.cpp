@@ -118,10 +118,23 @@ int main() {
             total_loss += error * error;
 
             // Backprop
+
+            // calculate the gradient of the output layer
             float d_out = error * sigmoid_derivative(out);
+
+            // ADD NOISE HERE 
+
+
             for (int j = 0; j < HIDDEN_DIM; ++j) {
+
+                // here we are calculating the gradients for the hidden layer 
+
                 float d_hidden = d_out * W2[j] * relu_derivative(hidden[j]);
+
+                // ADD NOISE HERE 
+                
                 for (int k = 0; k < INPUT_DIM; ++k)
+
                     W1[j][k] += LEARNING_RATE * d_hidden * X_train[i][k];
                 B1[j] += LEARNING_RATE * d_hidden;
                 W2[j] += LEARNING_RATE * d_out * hidden[j];
