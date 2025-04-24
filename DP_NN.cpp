@@ -1,23 +1,7 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cmath>
-#include <random>
-#include <sstream>
-#include <algorithm>
-#include <numeric>
-#include <chrono>
+#include "DP_NN.h"
 
-#include "DataLoader.h"
+int INPUT_DIM;
 
-using namespace std;
-
-int INPUT_DIM = 0;
-
-const int HIDDEN_DIM = 16;
-const float LEARNING_RATE = 0.01;
-const int EPOCHS = 500;
-const float TEST_RATIO = 0.2;
 
 // Sigmoid and ReLU
 float sigmoid(float x) { return 1.0f / (1.0f + exp(-x)); }
@@ -120,19 +104,21 @@ int main() {
             // Backprop
 
             // calculate the gradient of the output layer
-            float d_out = error * sigmoid_derivative(out);
+            float d_out_raw = error * sigmoid_derivative(out);
 
             // ADD NOISE HERE 
+            float d_out = add_gaussian_noise(d_out_raw);
 
 
             for (int j = 0; j < HIDDEN_DIM; ++j) {
 
                 // here we are calculating the gradients for the hidden layer 
 
-                float d_hidden = d_out * W2[j] * relu_derivative(hidden[j]);
+                float d_hidden_raw = d_out * W2[j] * relu_derivative(hidden[j]);
 
                 // ADD NOISE HERE 
-                
+                float d_hidden = add_gaussian_noise(d_hidden_raw);
+
                 for (int k = 0; k < INPUT_DIM; ++k)
 
                     W1[j][k] += LEARNING_RATE * d_hidden * X_train[i][k];

@@ -1,23 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cmath>
-#include <random>
-#include <sstream>
-#include <algorithm>
-#include <numeric>
-#include <chrono>
-
-#include "DataLoader.h"
-
-using namespace std;
-
-int INPUT_DIM = 0;
-
-const int HIDDEN_DIM = 16;
-const float LEARNING_RATE = 0.01;
-const int EPOCHS = 500;
-const float TEST_RATIO = 0.2;
+#include "NN.h"
 
 // Sigmoid and ReLU
 float sigmoid(float x) { return 1.0f / (1.0f + exp(-x)); }
