@@ -45,14 +45,35 @@ void normalize(vector<vector<float>>& train, vector<vector<float>>& test) {
             row[j] = (row[j] - mean[j]) / stddev[j];
 }
 
+double compute_epsilon(int T, double sigma, double delta = 1e-5) {
+    if (sigma <= 0) {
+        std::cerr << "Error: sigma must be positive." << std::endl;
+        return -1;
+    }
+    if (T <= 0) {
+        std::cerr << "Error: T must be positive." << std::endl;
+        return -1;
+    }
+    if (delta <= 0 || delta >= 1) {
+        std::cerr << "Error: delta must be between 0 and 1." << std::endl;
+        return -1;
+    }
+
+    double term1 = std::sqrt(2.0 * T * std::log(1.0 / delta)) / sigma;
+    double term2 = static_cast<double>(T) / (sigma * sigma);
+    double epsilon = term1 + term2;
+
+    return epsilon;
+}
+
 int main() {
 
     vector<vector<float>> X;
     vector<float> y;
-    load_csv_wdbc("datasets/breast+cancer+wisconsin+diagnostic/wdbc.data", X, y);
+    // load_csv_wdbc("datasets/breast+cancer+wisconsin+diagnostic/wdbc.data", X, y);
     // load_csv_votes("datasets/congressional+voting+records/house-votes-84.data", X, y);
 
-    // load_csv_iris("datasets/iris/iris.data", X, y);
+    load_csv_iris("datasets/iris/iris.data", X, y);
 
     // get the input dimension
     INPUT_DIM = X[0].size(); // <-- set input dimension dynamically
@@ -119,9 +140,8 @@ int main() {
             // calculate gradient, clip, and add noise 
             float d_out_raw = error * sigmoid_derivative(out);
             vector<float> grads_out = { d_out_raw };
-            float norm_out = compute_l2_norm(grads_out);
-            float d_out_clipped = clip_by_l2norm(d_out_raw, norm_out, CLIP_THRESHOLD); // ← define this somewhere
-            float d_out = add_gaussian_noise(d_out_clipped);
+
+            float d_out = d_out_raw; // No clipping or noise
 
             for (int j = 0; j < HIDDEN_DIM; ++j) {
 
@@ -164,5 +184,6 @@ int main() {
     }
 
     cout << "\nTest Accuracy: " << (float)correct / X_test.size() * 100.0f << "%" << endl;
+    cout << "Epsilon: " << compute_epsilon(EPOCHS, SIGMA) << endl;
     return 0;
 }

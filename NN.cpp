@@ -1,5 +1,7 @@
 #include "NN.h"
 
+int INPUT_DIM;
+
 // Sigmoid and ReLU
 float sigmoid(float x) { return 1.0f / (1.0f + exp(-x)); }
 float sigmoid_derivative(float x) { return x * (1 - x); }
@@ -33,8 +35,8 @@ int main() {
 
     vector<vector<float>> X;
     vector<float> y;
-    load_csv_wdbc("datasets/breast+cancer+wisconsin+diagnostic/wdbc.data", X, y);
-    // load_csv_votes("datasets/congressional+voting+records/house-votes-84.data", X, y);
+    // load_csv_wdbc("datasets/breast+cancer+wisconsin+diagnostic/wdbc.data", X, y);
+    load_csv_votes("datasets/congressional+voting+records/house-votes-84.data", X, y);
 
     // load_csv_iris("datasets/iris/iris.data", X, y);
 

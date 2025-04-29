@@ -21,7 +21,7 @@ using namespace std;
 // Constants
 const int HIDDEN_DIM = 16;
 const float LEARNING_RATE = 0.01;
-const int EPOCHS = 500;
+const int EPOCHS = 100;
 const float TEST_RATIO = 0.2;
 const float CLIP_THRESHOLD = 1.0; // Gradient clipping threshold
 
@@ -37,6 +37,9 @@ float compute_l2_norm(const vector<float>& vec);
 
 // Data normalization
 void normalize(std::vector<std::vector<float>>& train, std::vector<std::vector<float>>& test);
+
+// calculate epsilon 
+double compute_epsilon(int T, double sigma, double delta);
 
 // Main function
 int main();

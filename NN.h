@@ -18,10 +18,10 @@
 using namespace std;
 
 // Constants
-extern int INPUT_DIM;
+// extern int INPUT_DIM;
 const int HIDDEN_DIM = 16;
 const float LEARNING_RATE = 0.01;
-const int EPOCHS = 500;
+const int EPOCHS = 100;
 const float TEST_RATIO = 0.2;
 
 // Activation functions
